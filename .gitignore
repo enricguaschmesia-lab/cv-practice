@@ -1,0 +1,31 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Virtual environments ---
+.venv/
+venv/
+
+# --- VS Code local stuff (keep settings, ignore workspace-local noise) ---
+.vscode/*.log
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+
+# --- Data & outputs ---
+data/raw/
+outputs/
+
+# Packaging / build artifacts
+*.egg-info/
+build/
+dist/
+pip-wheel-metadata/
