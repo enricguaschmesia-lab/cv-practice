@@ -21,9 +21,7 @@ HAND_CONNECTIONS = [
 ]
 
 def draw_fps(frame_bgr, fps: float):
-    """
-    Subtle FPS overlay: small text with a semi-transparent rounded-ish background.
-    """
+
     text = f"{fps:.1f} FPS"
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_scale = 0.6
@@ -97,7 +95,17 @@ with HandLandmarker.create_from_options(options) as landmarker:
         result = landmarker.detect_for_video(mp_image, timestamp_ms)
 
         if result.hand_landmarks:
+            for hand_landmarks in result.hand_landmarks:
+                for id, lm in enumerate(hand_landmarks):
+                    h, w, _ = frame.shape
+                    cx, cy = int(lm.x * w), int(lm.y * h)
+
+                    # print(f"Landmark {id}: ({cx}, {cy})")
+                    if id == 8:  # Index fingertip
+                        cv2.circle(frame, (cx, cy), 9, (255, 0, 0), -1)
+
             draw_hand_landmarks(frame, result.hand_landmarks)
+            
 
         draw_fps(frame, fps_ema)
 
