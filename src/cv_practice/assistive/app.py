@@ -89,6 +89,15 @@ def _draw_hud(
     )
 
 
+def _open_camera(cfg):
+    cap = cv2.VideoCapture(cfg.camera_id)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, cfg.frame_width)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, cfg.frame_height)
+    if not cap.isOpened():
+        raise RuntimeError("Could not open webcam.")
+    return cap
+
+
 def run_assistive_app(config_path: str | None = None) -> None:
     cfg = load_assistive_config(config_path)
     profile = load_profile(cfg.profile_path)
@@ -98,11 +107,8 @@ def run_assistive_app(config_path: str | None = None) -> None:
     telemetry = TelemetryLogger(cfg.output_dir)
     recorder = GestureRecorder(Path(cfg.output_dir) / "recordings")
 
-    cap = cv2.VideoCapture(cfg.camera_id)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, cfg.frame_width)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, cfg.frame_height)
-    if not cap.isOpened():
-        raise RuntimeError("Could not open webcam.")
+    cap = _open_camera(cfg)
+    detector = HandDetector(model_path=profile.model_path, num_hands=1)
 
     prev_t = time.perf_counter()
     fps_ema = 0.0
@@ -117,7 +123,7 @@ def run_assistive_app(config_path: str | None = None) -> None:
         ord("5"): "two_finger_tap",
     }
 
-    with HandDetector(model_path=profile.model_path, num_hands=1) as detector:
+    try:
         while True:
             frame_start = time.perf_counter()
             ok, frame = cap.read()
@@ -171,20 +177,43 @@ def run_assistive_app(config_path: str | None = None) -> None:
                 else:
                     recorder.start("idle")
             if key == ord("c"):
-                new_profile = run_calibration(cfg.camera_id, profile.model_path)
-                new_profile.name = profile.name
-                profile = new_profile
-                save_profile(profile, cfg.profile_path)
-                machine = GestureStateMachine(profile)
-                prev_features = None
-                last_event = "profile_recalibrated"
+                was_recording = recorder.is_recording
+                if was_recording:
+                    recorder.stop()
+
+                detector.close()
+                cap.release()
+                cv2.destroyAllWindows()
+                try:
+                    new_profile = run_calibration(cfg.camera_id, profile.model_path)
+                    sample_count = float(new_profile.extra.get("calibration_samples", 0.0))
+                    if sample_count > 0:
+                        new_profile.name = profile.name
+                        new_profile.model_path = profile.model_path
+                        profile = new_profile
+                        save_profile(profile, cfg.profile_path)
+                        machine = GestureStateMachine(profile)
+                        prev_features = None
+                        last_event = "profile_recalibrated"
+                    else:
+                        last_event = "calibration_cancelled_or_empty"
+                except Exception as exc:
+                    last_event = f"calibration_failed ({exc.__class__.__name__})"
+                finally:
+                    cap = _open_camera(cfg)
+                    detector = HandDetector(model_path=profile.model_path, num_hands=1)
+                    prev_t = time.perf_counter()
+                    if was_recording:
+                        recorder.start(recorder.active_label)
             if key in label_map and recorder.is_recording:
                 recorder.set_label(label_map[key])
 
-    cap.release()
-    recorder.stop()
-    summary = telemetry.finalize()
-    cv2.destroyAllWindows()
+    finally:
+        detector.close()
+        cap.release()
+        recorder.stop()
+        summary = telemetry.finalize()
+        cv2.destroyAllWindows()
     print(
         "AGCP session summary: "
         f"frames={summary.frames}, commands={summary.commands}, "
