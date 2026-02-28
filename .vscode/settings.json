@@ -11,5 +11,7 @@
     },
     "ruff.enable": true,
     "ruff.lint.enable": true,
-    "python.envFile": "$cv-practice/.env"
+    "python.envFile": "$cv-practice/.env",
+    "python-envs.defaultEnvManager": "ms-python.python:venv",
+    "python-envs.pythonProjects": []
 }
