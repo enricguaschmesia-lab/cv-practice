@@ -1,0 +1,17 @@
+{
+  "name": "default",
+  "hold_ms": 300,
+  "cooldown_ms": 450,
+  "volume_emit_ms": 120,
+  "volume_deadzone": 0.03,
+  "pinch_min": 0.12,
+  "pinch_max": 0.44839999999999997,
+  "open_min": 1.2144000000000001,
+  "fist_max": 1.0304000000000002,
+  "two_finger_tap_max": 0.19040000000000004,
+  "smoothing_alpha": 0.2,
+  "model_path": "models/hand_landmarker.task",
+  "extra": {
+    "calibration_samples": 0.0
+  }
+}
