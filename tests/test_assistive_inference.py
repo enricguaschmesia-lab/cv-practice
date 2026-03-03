@@ -99,3 +99,45 @@ def test_predict_gesture_labels() -> None:
     assert predict_gesture(fist_feat, p).label == "fist"
     assert predict_gesture(pinch_feat, p).label == "pinch_control"
     assert predict_gesture(tap_feat, p).label == "two_finger_tap"
+
+
+def test_two_finger_tap_not_overridden_by_open_hand() -> None:
+    p = UserProfile(name="t")
+    feat = GestureFeatures(
+        valid=True,
+        pinch_ratio=0.31,
+        open_ratio=1.42,
+        fist_ratio=0.70,
+        two_finger_ratio=0.10,
+        palm_scale_px=140.0,
+        index_tip_y_px=145.0,
+        thumb_ext_ratio=1.06,
+        index_ext_ratio=1.64,
+        middle_ext_ratio=1.58,
+        ring_ext_ratio=1.08,
+        pinky_ext_ratio=1.05,
+    )
+    pred = predict_gesture(feat, p)
+    assert pred.label == "two_finger_tap"
+    assert pred.debug is not None
+    assert pred.debug.two_finger_conf > pred.debug.open_full_conf
+
+
+def test_pinch_not_classified_as_fist_when_thumb_index_are_close() -> None:
+    p = UserProfile(name="t")
+    feat = GestureFeatures(
+        valid=True,
+        pinch_ratio=0.13,
+        open_ratio=0.86,
+        fist_ratio=1.16,
+        two_finger_ratio=0.24,
+        palm_scale_px=140.0,
+        index_tip_y_px=185.0,
+        thumb_ext_ratio=1.02,
+        index_ext_ratio=1.44,
+        middle_ext_ratio=1.18,
+        ring_ext_ratio=1.08,
+        pinky_ext_ratio=1.07,
+    )
+    pred = predict_gesture(feat, p)
+    assert pred.label != "fist"

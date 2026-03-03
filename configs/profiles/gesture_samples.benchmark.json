@@ -1,0 +1,26 @@
+{
+  "name": "gesture_samples_benchmark",
+  "hold_ms": 300,
+  "cooldown_ms": 450,
+  "volume_emit_ms": 120,
+  "volume_deadzone": 0.03,
+  "pinch_min": 0.06,
+  "pinch_max": 0.2,
+  "fist_pinch_min": 0.11,
+  "open_min": 1.45,
+  "fist_max": 0.95,
+  "two_finger_tap_max": 0.2,
+  "open_two_finger_min": 0.16,
+  "open_fist_margin": 0.06,
+  "open_tap_margin": 0.04,
+  "fist_pinch_margin": 0.04,
+  "pinch_fist_margin": 0.02,
+  "two_finger_vs_pinch_ratio": 0.85,
+  "lock_pinch_guard_ratio": 0.14,
+  "lock_pinch_guard_conf": 0.62,
+  "smoothing_alpha": 0.2,
+  "model_path": "models/hand_landmarker.task",
+  "extra": {
+    "calibration_samples": 0.0
+  }
+}

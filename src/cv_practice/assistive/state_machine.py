@@ -39,6 +39,18 @@ class GestureStateMachine:
     def _held_long_enough(self, now_ms: int) -> bool:
         return now_ms - self._label_since_ms >= self.profile.hold_ms
 
+    def debug_snapshot(self, now_ms: int) -> dict[str, float | int | bool | str | None]:
+        hold_elapsed_ms = max(0, now_ms - self._label_since_ms)
+        return {
+            "locked": self.locked,
+            "active_label": self._active_label,
+            "hold_elapsed_ms": hold_elapsed_ms,
+            "hold_required_ms": self.profile.hold_ms,
+            "tap_hold_required_ms": max(120, self.profile.hold_ms // 2),
+            "pinch_baseline": self._pinch_baseline,
+            "tap_latched": self._tap_latched,
+        }
+
     def update(self, prediction: GesturePrediction, t_ms: int) -> list[CommandEvent]:
         self.metrics.frames_seen += 1
         if prediction.label != "unknown":
@@ -79,6 +91,13 @@ class GestureStateMachine:
                 and self._held_long_enough(t_ms)
                 and self._can_emit("lock", t_ms)
             ):
+                if prediction.features.pinch_ratio <= self.profile.lock_pinch_guard_ratio:
+                    return []
+                if (
+                    prediction.debug is not None
+                    and prediction.debug.pinch_conf >= self.profile.lock_pinch_guard_conf
+                ):
+                    return []
                 self.locked = True
                 self._last_volume_value = None
                 events.append(

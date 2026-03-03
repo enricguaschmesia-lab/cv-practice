@@ -75,3 +75,20 @@ def test_two_finger_tap_is_latched_until_release() -> None:
     second = sm.update(_pred("two_finger_tap"), 1950)
     assert len(second) == 1
     assert second[0].command == "media_play_pause"
+
+
+def test_lock_guard_blocks_fist_when_pinch_signature_is_present() -> None:
+    profile = UserProfile(
+        name="t",
+        hold_ms=150,
+        cooldown_ms=250,
+        lock_pinch_guard_ratio=0.24,
+        lock_pinch_guard_conf=0.55,
+    )
+    sm = GestureStateMachine(profile)
+    sm.locked = False
+
+    assert sm.update(_pred("fist", conf=0.9, pinch_ratio=0.16), 1000) == []
+    blocked = sm.update(_pred("fist", conf=0.9, pinch_ratio=0.16), 1200)
+    assert blocked == []
+    assert sm.locked is False

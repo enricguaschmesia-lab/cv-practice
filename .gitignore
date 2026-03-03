@@ -22,7 +22,9 @@ Thumbs.db
 
 # --- Data & outputs ---
 data/raw/
+data/samples/gestures/
 outputs/
+tests/test_assistive_gesture_samples.py
 
 # Packaging / build artifacts
 *.egg-info/
