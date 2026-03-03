@@ -1,54 +1,59 @@
 # cv-practice
 
-Personal computer vision practice project (Python).
+Repository for multiple computer vision test projects.
 
-## AGCP MVP (Assistive Gesture Control Platform)
-This repo now includes an MVP under `src/cv_practice/assistive`:
-- real-time gesture inference from MediaPipe hand landmarks
-- lock/unlock safety state machine with hold/cooldown gating
-- volume/media command routing
-- calibration profiles (`configs/profiles/*.json`)
-- session telemetry and optional labeled recording
-- offline evaluation for recorded clips
+## Repository Structure
 
-### Run AGCP
-1) Install runtime dependencies (inside your venv):
-- `pip install mediapipe opencv-python pycaw pyyaml`
+- `projects/assistive_gesture_control/`: self-contained AGCP project (code, configs, docs, tests, models, data).
+- `projects/air_canvas_studio/`: standalone Air Canvas project.
+- `experiments/scratch/`: one-off scripts and prototypes (not full projects).
 
-2) Run:
-- `python -m cv_practice.assistive`
-- optional config: `python -m cv_practice.assistive --config configs/assistive.default.yaml`
+## Current Projects
 
-### AGCP Controls
-- `Q`: quit
-- `C`: run calibration and save profile
-- `R`: toggle recording mode
-- `1..5`: set recording ground-truth label (`idle/open/fist/pinch/tap`)
+### 1) Assistive Gesture Control Platform (AGCP)
 
-### Evaluate Recordings
-- `python -m cv_practice.assistive.evaluation outputs/assistive/recordings/<file>.jsonl`
+Core code lives in `projects/assistive_gesture_control/agcp`.
+
+Project assets:
+- `projects/assistive_gesture_control/agcp/`
+- `projects/assistive_gesture_control/configs/`
+- `projects/assistive_gesture_control/docs/`
+- `projects/assistive_gesture_control/tests/`
+- `projects/assistive_gesture_control/models/`
+- `projects/assistive_gesture_control/data/samples/`
+
+Run:
+- `python projects/assistive_gesture_control/run.py`
+- custom config: `python projects/assistive_gesture_control/run.py --config projects/assistive_gesture_control/configs/assistive.default.yaml`
+
+Evaluate recordings:
+- `python projects/assistive_gesture_control/evaluate.py projects/assistive_gesture_control/outputs/recordings/<file>.jsonl`
+
+### 2) Air Canvas Studio
+
+Script:
+- `projects/air_canvas_studio/AirCanvasStudio.py`
+
+Run:
+- `python projects/air_canvas_studio/AirCanvasStudio.py`
 
 ## Setup
-1) Create venv
-- `python -m venv .venv`
 
-2) Activate it
-- macOS/Linux: `source .venv/bin/activate`
-- Windows (PowerShell): `.venv\Scripts\Activate.ps1`
+1. `python -m venv .venv`
+2. Activate:
+   - macOS/Linux: `source .venv/bin/activate`
+   - Windows PowerShell: `.venv\Scripts\Activate.ps1`
+3. Install:
+   - `pip install -U pip`
+   - `pip install -e .`
+   - `pip install opencv-python numpy matplotlib mediapipe pycaw pyyaml pytest ruff`
 
-3) Install dependencies
-- `pip install -U pip`
-- `pip install opencv-python numpy matplotlib`
-- `pip install pytest ruff`
+## Testing
 
-(Optional for notebooks)
-- `pip install jupyter`
-
-## Run
-- `python -m cv_practice.main`
-
-## Tests
-- `pytest`
+- Full suite: `pytest -q`
+- Gesture image test:
+  - PowerShell: `$env:RUN_GESTURE_IMAGE_TESTS='1'; pytest -q projects/assistive_gesture_control/tests/test_assistive_gesture_samples.py`
 
 ## Lint
+
 - `ruff check .`

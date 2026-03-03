@@ -9,10 +9,11 @@ description = "Personal computer vision practice project"
 requires-python = ">=3.10"
 
 [tool.setuptools]
-package-dir = {"" = "src"}
+package-dir = {"" = "projects/assistive_gesture_control"}
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["projects/assistive_gesture_control"]
+include = ["agcp*"]
 
 [tool.ruff]
 line-length = 100
@@ -23,7 +24,7 @@ select = ["E", "F", "I", "B"]
 ignore = []
 
 [tool.ruff.lint.isort]
-known-first-party = ["cv_practice"]
+known-first-party = ["agcp"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["projects/assistive_gesture_control/tests"]

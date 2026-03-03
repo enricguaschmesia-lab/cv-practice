@@ -1,0 +1,32 @@
+{
+  "name": "default",
+  "hold_ms": 300,
+  "cooldown_ms": 450,
+  "volume_emit_ms": 120,
+  "volume_deadzone": 0.03,
+  "pinch_min": 0.12,
+  "pinch_max": 0.22308000000000003,
+  "fist_pinch_min": 0.27747800000000006,
+  "open_min": 1.634048834454485,
+  "fist_max": 0.8744916532242664,
+  "two_finger_tap_max": 0.1393491182954786,
+  "open_two_finger_min": 0.17192113876565096,
+  "open_fist_margin": 0.08,
+  "open_tap_margin": 0.06,
+  "fist_pinch_margin": 0.07,
+  "pinch_fist_margin": 0.04,
+  "two_finger_vs_pinch_ratio": 0.92,
+  "lock_pinch_guard_ratio": 0.25308,
+  "lock_pinch_guard_conf": 0.58,
+  "smoothing_alpha": 0.2,
+  "model_path": "models/hand_landmarker.task",
+  "extra": {
+    "calibration_samples": 156.0,
+    "open_two_finger_median": 0.20408545988453575,
+    "fist_pinch_median": 0.2773712275066832,
+    "open_pose_samples": 40.0,
+    "fist_pose_samples": 39.0,
+    "pinch_pose_samples": 39.0,
+    "tap_pose_samples": 38.0
+  }
+}

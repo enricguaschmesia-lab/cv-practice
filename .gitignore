@@ -21,10 +21,16 @@ venv/
 Thumbs.db
 
 # --- Data & outputs ---
-data/raw/
-data/samples/gestures/
 outputs/
-tests/test_assistive_gesture_samples.py
+projects/assistive_gesture_control/data/samples/gestures/
+projects/assistive_gesture_control/outputs/
+projects/assistive_gesture_control/tests/test_assistive_gesture_samples.py
+projects/air_canvas_studio/outputs/
+
+# --- Local planning / agent notes ---
+agents.md
+projects/assistive_gesture_control/docs/agcp_mvp.md
+projects/assistive_gesture_control/command_ideas_plan.md
 
 # Packaging / build artifacts
 *.egg-info/
